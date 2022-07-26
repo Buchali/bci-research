@@ -130,3 +130,4 @@ dmypy.json
 
 # Costum gitignore
 src/data
+.DS_Store
