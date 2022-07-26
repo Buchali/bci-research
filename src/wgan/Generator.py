@@ -1,3 +1,4 @@
+import torch
 from torch import nn
 
 
@@ -62,3 +63,13 @@ class Generator(nn.Module):
             z (torch.Tensor): the z vector
         """
         return self.gen(z)
+
+def make_noise(batch_size, z_dim, device='cpu'):
+    """
+    Making a noise vector
+
+    Args:
+        batch_size (int): the number of the batch
+        z_dim (int): dimension of the noise vector
+    """
+    return torch.randn(batch_size, z_dim, device=device)
