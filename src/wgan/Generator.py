@@ -79,7 +79,7 @@ def make_noise(batch_size, z_dim, device='cpu'):
 
 if __name__ == '__main__':
     # Testing the Generator class
-    gen = Generator(z_dim=10, img_chan=1, hidden_dim=64)
-    z = make_noise(batch_size=2, z_dim=10)
+    gen = Generator(z_dim=20, img_chan=1, hidden_dim=64)
+    z = make_noise(batch_size=2, z_dim=20)
     gen_pred = gen(z)
     print(gen_pred.shape)

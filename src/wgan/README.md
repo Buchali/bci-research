@@ -1,4 +1,4 @@
-# GAN for MI-based BCI
+# Conditional W-GAN for MI-based BCI
 
 Generating artificial data to improve the classification of MI tasks based on 2D stft representations of EEG signals.
 

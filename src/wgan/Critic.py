@@ -11,7 +11,7 @@ class Critic(nn.Module):
         img_chan (int): the number of the input image channels
         hidden_dim (int): the number of the hidden units
     """
-    def __init__(self, img_chan=1, hidden_dim=32):
+    def __init__(self, img_chan=1, output_chan=1, hidden_dim=32):
         super(Critic, self).__init__()
 
         # The Network
@@ -20,7 +20,7 @@ class Critic(nn.Module):
             self.make_critic_block(hidden_dim, 2*hidden_dim),
             self.make_critic_block(2*hidden_dim, 4*hidden_dim),
             self.make_critic_block(4*hidden_dim, 8*hidden_dim),
-            self.make_critic_block(8*hidden_dim, img_chan, kernel_size=2, padding=0, final_layer=True)
+            self.make_critic_block(8*hidden_dim, output_chan, kernel_size=2, padding=0, final_layer=True)
         )
 
     def make_critic_block(self, input_dim, output_dim, kernel_size=4, stride=2, padding=1, final_layer=False):
@@ -59,7 +59,7 @@ class Critic(nn.Module):
 
 if __name__ == '__main__':
     # Testing the Critic model
-    img = torch.randn(1, 1, 32, 32)
-    critic = Critic()
+    img = torch.randn(1, 3, 32, 32)
+    critic = Critic(img_chan=3, hidden_dim=32)
     critic_pred = critic(img)
     print(critic_pred.shape)
