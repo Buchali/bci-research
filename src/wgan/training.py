@@ -1,7 +1,7 @@
 import torch
 from src.data import DATA_DIR
-from src.wgan.Critic import Critic
-from src.wgan.Generator import Generator, make_noise
+from wgan.critic import Critic
+from wgan.generator import Generator, make_noise
 from src.wgan.gradient import get_gradient, gradient_penalty
 from src.wgan.weights_init import weights_init
 from torch.utils.data import DataLoader
