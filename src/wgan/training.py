@@ -7,6 +7,9 @@ from src.wgan.weights_init import weights_init
 from torch.utils.data import DataLoader
 from torchvision import datasets, transforms
 from tqdm.auto import tqdm
+from src.wgan.visualize import plot_tensor
+import matplotlib.pyplot as plt
+
 
 z_dim = 100
 batch_size = 28
@@ -24,7 +27,6 @@ graz_dataset = datasets.ImageFolder(root=root, transform=transform)
 dataloader = DataLoader(graz_dataset, batch_size=batch_size, shuffle=False)
 
 # Learning Parameters
-epochs = 20
 lr_gen = 0.002
 lr_critic = 0.001
 beta_1, beta_2 = 0.5, 0.999
@@ -34,9 +36,9 @@ c_lambda = 10
 gen_opt = torch.optim.Adam(params=gen.parameters(), lr=lr_gen, betas=(beta_1, beta_2))
 critic_opt = torch.optim.Adam(params=critic.parameters(), lr=lr_critic, betas=(beta_1, beta_2))
 
-## Training
+## Trining
+epochs = 30
 device = 'cpu'
-cur_batch_size = batch_size
 cur_step = 0
 gen_loss_mean = 0
 critic_loss_mean = 0
@@ -60,12 +62,12 @@ for epoch in range(epochs):
         critic.zero_grad()
 
         z_2 = make_noise(batch_size=cur_batch_size, z_dim=z_dim, device=device)
-        fake_2 = gen(z_2) # G(z)
-        fake_score = critic(fake_2.detach()) # C(G(z))
+        fake = gen(z_2) # G(z)
+        fake_score = critic(fake.detach()) # C(G(z))
         real_score = critic(real) # C(x)
         # gradient penalty
         epsilon = torch.rand(cur_batch_size, 1, 1, 1, device=device, requires_grad=True)
-        gradient = get_gradient(critic=critic, real=real, fake=fake_2.detach(), epsilon=epsilon)
+        gradient = get_gradient(critic=critic, real=real, fake=fake.detach(), epsilon=epsilon)
 
         critic_loss = fake_score.mean() - real_score.mean() + c_lambda * gradient_penalty(gradient) # Critic Loss
         critic_loss.backward()
@@ -78,4 +80,14 @@ for epoch in range(epochs):
         cur_step += 1
         if cur_step % display_step == 0:
             print(f'Epoch: {epoch}, Step: {cur_step}, Generator Mean Loss: {gen_loss_mean:.2f}, Critic Loss: {critic_loss_mean:.2f}')
+            gen_loss_mean = 0
+            critic_loss_mean = 0
 
+# Plot
+real_image = plot_tensor(real)
+fake_image = plot_tensor(fake)
+plt.subplot(121)
+plt.imshow(real_image)
+plt.subplot(122)
+plt.imshow(fake_image)
+plt.show()
