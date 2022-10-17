@@ -19,8 +19,8 @@ batch_size = 28
 gen = Generator(z_dim=z_dim+n_classes, hidden_dim=64, img_chan=1)
 critic = Critic(img_chan=3, hidden_dim=32)
 
-gen.apply(weights_init)
-critic.apply(weights_init)
+gen = gen.apply(weights_init)
+critic = critic.apply(weights_init)
 
 # Data Loading
 root = DATA_DIR / 'graz/stft_image_data'
