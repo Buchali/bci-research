@@ -1,5 +1,6 @@
 import torch
 import torch.nn.functional as F
+from torchvision.utils import make_grid
 
 
 def make_noise(batch_size, z_dim, device='cpu'):
@@ -33,3 +34,14 @@ def combine_vectors(x, y):
     Concatenate two vectors.
     """
     return torch.cat((x.float(),y.float()), 1)
+
+def plot_tensor(image_tensor, num_img=20, dim_img=(1, 32, 32)):
+    '''
+    Function for visualizing images: Given a tensor of images, number of images, and
+    size per image, plots and prints the images in an uniform grid.
+    '''
+    image_tensor = (image_tensor + 1) / 2
+    image_unflat = image_tensor.detach().cpu()
+    image_grid = make_grid(image_unflat[:num_img], nrow=5)
+    return image_grid.permute(1, 2, 0).squeeze()
+

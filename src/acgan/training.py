@@ -1,12 +1,13 @@
 import torch
 from src.acgan.nets import Classifier, Critic, Generator, weights_init
 from src.acgan.utils import (combine_vectors, make_label, make_noise,
-                             make_one_hot_labels)
+                             make_one_hot_labels, plot_tensor)
 from src.data import DATA_DIR
 from torch import nn
 from torch.utils.data import DataLoader
 from torchvision import datasets, transforms
 from tqdm.auto import tqdm
+import streamlit as st
 
 
 # Create Networks
@@ -64,8 +65,9 @@ critic_loss_mean = 0
 classifier_mean_error = 0
 
 
+st.title('ACGAN Training')
 for epoch in range(epochs):
-    for real, labels in tqdm(dataloader):
+    for real, labels in dataloader:
         cur_batch_size = len(real)
         real = real.to(device=device)
 
@@ -128,16 +130,24 @@ for epoch in range(epochs):
 
         cur_step += 1
         if cur_step % display_step == 0:
-            print(
-                f'Epoch: {epoch} / {epochs}, Step: {cur_step} \n' +
-                f'Classifier Mean error: {classifier_mean_error / display_step:.2f} % \n' +
-                f'Generator Mean Loss: {gen_loss_mean:.2f} \n' +
-                f'Classifier Mean Loss: {classifier_loss_mean:.2f} \n' +
-                f'Critic Loss: {critic_loss_mean:.2f}'
+            fake_images = plot_tensor(fake)
+            real_images = plot_tensor(real)
+
+            # streamlit dashboard
+            st.write(f'Epoch: {epoch} / {epochs}')
+            st.progress(epoch/epochs)
+            st.write(f'Classifier Mean error: {classifier_mean_error / display_step:.2f} %')
+            st.write(
+                'Generator Mean Loss:', f'{gen_loss_mean:.2f}', ' | ',
+                'Classifier Mean Loss:', f'{classifier_loss_mean:.2f}', ' | ',
+                'Critic Loss:', f'{critic_loss_mean:.2f}'
             )
-            # show_tensor_images(fake)
-            # show_tensor_images(real)
+
+            st.image([fake_images.numpy(), real_images.numpy()], width=300, caption=['Fake images', 'Real images'])
+
+            # reset the params
             gen_loss_mean = 0
             classifier_loss_mean = 0
             critic_loss_mean = 0
             classifier_mean_error = 0
+st.success('Training Completed Successfully!', icon="✅")
