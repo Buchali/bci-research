@@ -1,5 +1,6 @@
 import torch
 import torch.nn.functional as F
+from torchvision import datasets, transforms
 from torchvision.utils import make_grid
 
 
@@ -45,3 +46,12 @@ def plot_tensor(image_tensor, num_img=20, dim_img=(1, 32, 32)):
     image_grid = make_grid(image_unflat[:num_img], nrow=5)
     return image_grid.permute(1, 2, 0).squeeze()
 
+def load_dataset(root):
+    transform =  transforms.Compose(
+            [
+                transforms.Grayscale(),
+                transforms.ToTensor(),
+                transforms.Normalize(0, 1, inplace=False)
+            ]
+        )
+    return datasets.ImageFolder(root=root, transform=transform)
