@@ -1,3 +1,4 @@
+import streamlit as st
 import torch
 from src.acgan.nets import Classifier, Critic, Generator, weights_init
 from src.acgan.utils import (combine_vectors, make_label, make_noise,
@@ -6,9 +7,6 @@ from src.data import DATA_DIR
 from torch import nn
 from torch.utils.data import DataLoader
 from torchvision import datasets, transforms
-from tqdm.auto import tqdm
-import streamlit as st
-
 
 # Create Networks
 z_dim = 20
