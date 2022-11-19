@@ -1,12 +1,12 @@
 import matplotlib.pyplot as plt
 import torch
 from src.data import DATA_DIR
-from src.wgan.Critic import Critic
-from src.wgan.Generator import Generator, make_noise
-from src.wgan.gradient import get_gradient, gradient_penalty
-from src.wgan.one_hot import make_one_hot_labels
-from src.wgan.visualize import plot_tensor
-from src.wgan.weights_init import weights_init
+from src.conditional_wgan.Critic import Critic
+from src.conditional_wgan.Generator import Generator, make_noise
+from src.conditional_wgan.gradient import get_gradient, gradient_penalty
+from src.conditional_wgan.one_hot import make_one_hot_labels
+from src.conditional_wgan.visualize import plot_tensor
+from src.conditional_wgan.weights_init import weights_init
 from torch.utils.data import DataLoader
 from torchvision import datasets, transforms
 from tqdm.auto import tqdm
@@ -19,8 +19,8 @@ batch_size = 28
 gen = Generator(z_dim=z_dim+n_classes, hidden_dim=64, img_chan=1)
 critic = Critic(img_chan=3, hidden_dim=32)
 
-gen.apply(weights_init)
-critic.apply(weights_init)
+gen = gen.apply(weights_init)
+critic = critic.apply(weights_init)
 
 # Data Loading
 root = DATA_DIR / 'graz/stft_image_data'
